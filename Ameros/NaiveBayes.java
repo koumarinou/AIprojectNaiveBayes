@@ -1,4 +1,5 @@
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -58,5 +59,32 @@ public class NaiveBayes {
             }
         }
         return wordFreq;
+    }
+
+    // Dimiourgei to lexilogio
+    public List<String> createVocabulary(Map<String, Integer> wordFreq, int m, int n, int k) {
+
+        // Taxinomei ta entries me vasi tin suxnotita apo tin ypsiloterh sthn xamiloterh kai ta silegei se mia lista
+        List<String> sortedWords = wordFreq.entrySet().stream()
+                                           .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                                           .map(Map.Entry::getKey)
+                                           .collect(Collectors.toList());
+
+        // Afairoume tis n pio suxnes lexeis
+        if (n > 0 && sortedWords.size() > n) {
+            // Oi n tha einai oi protes lexeis sth lista 
+            sortedWords = sortedWords.subList(n, sortedWords.size());
+        }
+
+        // Afairoume tis k pio spanies lexeis
+        if (k > 0 && sortedWords.size() > k) {
+            // Oi k oi teleftaies lexeis sth lista 
+            sortedWords = sortedWords.subList(0, sortedWords.size() - k);
+        }
+
+        // Epilegoume tis m suxnoteres lexeis apo tin kaionourgia lista 
+        return sortedWords.stream()
+                          .limit(m)
+                          .collect(Collectors.toList());
     }
 }
