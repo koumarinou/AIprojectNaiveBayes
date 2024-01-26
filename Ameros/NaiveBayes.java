@@ -44,4 +44,19 @@ public class NaiveBayes {
         // Ola ta keimena thetika h arnitika analogos me to path 
         return texts; 
     }
+
+
+    // Metraei ti sixnotita kathe lexis
+    public Map<String, Integer> createWordFrequencyMap(List<String> texts) {
+        // Dimiourgia enos Map opou metraei tin suxnotita kathes lexhs sto keimeno 
+        Map<String, Integer> wordFreq = new HashMap<>(); 
+        for (String text : texts) {
+            // Xwrizei to keimeno se lexeis
+            String[] words = text.toLowerCase().split("\\s+"); 
+            for (String word : words) {
+                wordFreq.put(word, wordFreq.getOrDefault(word, 0) + 1);
+            }
+        }
+        return wordFreq;
+    }
 }
