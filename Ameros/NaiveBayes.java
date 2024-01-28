@@ -1,10 +1,13 @@
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class NaiveBayes {
@@ -86,5 +89,20 @@ public class NaiveBayes {
         return sortedWords.stream()
                           .limit(m)
                           .collect(Collectors.toList());
+    }
+
+
+    // Metatropi tou keimenou se 1,0 an yparxoun h den yparxoun antistoixa oi lexeis
+    public int[] createFeatureVector(String text, List<String> sortedWords) {
+        int[] features = new int[sortedWords.size()];
+
+        // Metatrepei yo keimeno se lexeis kai peza
+        Set<String> wordsInText = new HashSet<>(Arrays.asList(text.toLowerCase().split("\\s+")));
+
+        for (int i = 0; i < sortedWords.size(); i++) {
+            features[i] = wordsInText.contains(sortedWords.get(i)) ? 1 : 0;
+        }
+
+        return features;
     }
 }
