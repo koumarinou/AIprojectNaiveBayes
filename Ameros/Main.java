@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,14 +38,24 @@ public class Main {
             // Dimiourgia lexilogiou
             // Arithmos ton lexewn sto lexilogio
             // 240
-            int m = 300;
+            int m = 500;
             // Arithmos ton pio suxnwn lexewn pros afairesi
             // 150
-            int n = 10;
+            int n = 200;
             // Arithmos ton pio spaniwn pros afairesh
             // 20
-            int k = 10;
+            int k = 50;
             List<String> vocabulary = nb.createVocabulary(combinedFreq, m, n, k);
+
+
+            // Lists to store precision, recall, and F1 score for each training size and accuracy 
+            List<Double> trainingPrecisions = new ArrayList<>();
+            List<Double> trainingRecalls = new ArrayList<>();
+            List<Double> trainingF1Scores = new ArrayList<>();
+            List<Double> trainingAccuracies = new ArrayList<>();
+            List<Double> testAccuracies = new ArrayList<>();
+
+            
 
 
     }  catch (IOException e) {
