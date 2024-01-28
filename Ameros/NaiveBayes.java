@@ -105,4 +105,32 @@ public class NaiveBayes {
 
         return features;
     }
+
+    // Methodos gia tin ekpaideusi
+    public void train(List<String> positiveTexts, List<String> negativeTexts) {
+        // Ypologismos suxnotitas thetikon kai arntikon lexewn
+        Map<String, Integer> freqPos = createWordFrequencyMap(positiveTexts);
+        Map<String, Integer> freqNeg = createWordFrequencyMap(negativeTexts);
+
+        // Ypologismos synolikon lexewn gia thetika kai anritika
+        double totalPosWords = freqPos.values().stream().mapToInt(Number::intValue).sum();
+        double totalNegWords = freqNeg.values().stream().mapToInt(Number::intValue).sum();
+
+        // Ypologismos pithanotiton gia kathe lexi se kathe katigoria
+        positiveProbabilities = new HashMap<>();
+        negativeProbabilities = new HashMap<>();
+        // Prosthetoume oles tis lexeis apo ta thetika keimena
+        Set<String> vocabulary = new HashSet<>(freqPos.keySet()); 
+        // Prosthetoume oles tis lexeis apo ta arnitika keimena
+        vocabulary.addAll(freqNeg.keySet());
+
+        for (String word : vocabulary) {
+            positiveProbabilities.put(word, Math.log((freqPos.getOrDefault(word, 0) + 1) / (totalPosWords + vocabulary.size())));
+            negativeProbabilities.put(word, Math.log((freqNeg.getOrDefault(word, 0) + 1) / (totalNegWords + vocabulary.size())));
+        }
+
+        // Ypologismos pithanotiton gia thetika kai arnitika keimena 
+        probPositive = Math.log((double) positiveTexts.size() / (positiveTexts.size() + negativeTexts.size()));
+        probNegative = Math.log((double) negativeTexts.size() / (positiveTexts.size() + negativeTexts.size()));
+    }
 }
