@@ -153,4 +153,58 @@ public class NaiveBayes {
         // Epistrofi katigorias me tin ypsiloterh pithanotita
         return logProbPositive > logProbNegative ? "Positive" : "Negative";
     }
+
+    
+    public double calculateAccuracy(List<String> texts, List<String> vocabulary, String expectedClass) {
+        int correct = 0;
+        for (String text : texts) {
+            String predictedClass = classifyText(text, vocabulary);
+            if (predictedClass.equals(expectedClass)) {
+                correct++;
+            }
+        }
+        return (double) correct / texts.size();
+    }
+
+    // Method to calculate TP, FP, and FN
+    public Map<String, Integer> calculateTPFPFN(List<String> texts, List<String> vocabulary, String label) {
+        int TP = 0, FP = 0, FN = 0;
+        for (String text : texts) {
+            String predictedClass = classifyText(text, vocabulary);
+            if (predictedClass.equals(label)) {
+                if (label.equals("Positive")) {
+                    TP++; 
+                } else {
+                    FN++; 
+                }
+            } else {
+                if (label.equals("Positive")) {
+                        FP++; 
+                }
+            }
+        }
+        Map<String, Integer> counts = new HashMap<>();
+        counts.put("TP", TP);
+        counts.put("FP", FP);
+        counts.put("FN", FN);
+
+        return counts;
+    }
+
+    // Method to calculate Precision
+    public double calculatePrecision(int TP, int FP) {
+        return TP / (double) (TP + FP);
+    }
+
+    // Method to calculate Recall
+    public double calculateRecall(int TP, int FN) {
+        return TP / (double) (TP + FN);
+    }
+
+    // Method to calculate F1 Score
+    public double calculateF1Score(int TP, int FP, int FN) {
+        double precision = calculatePrecision(TP, FP);
+        double recall = calculateRecall(TP, FN);
+        return 2 * (precision * recall) / (precision + recall);
+    }
 }
