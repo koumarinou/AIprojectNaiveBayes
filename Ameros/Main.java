@@ -34,6 +34,19 @@ public class Main {
             negativeFreq.forEach((key, value) -> combinedFreq.merge(key, value, Integer::sum));
 
 
+            // Dimiourgia lexilogiou
+            // Arithmos ton lexewn sto lexilogio
+            // 240
+            int m = 300;
+            // Arithmos ton pio suxnwn lexewn pros afairesi
+            // 150
+            int n = 10;
+            // Arithmos ton pio spaniwn pros afairesh
+            // 20
+            int k = 10;
+            List<String> vocabulary = nb.createVocabulary(combinedFreq, m, n, k);
+
+
     }  catch (IOException e) {
             e.printStackTrace();
         }
