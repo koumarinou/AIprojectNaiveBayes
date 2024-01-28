@@ -133,4 +133,24 @@ public class NaiveBayes {
         probPositive = Math.log((double) positiveTexts.size() / (positiveTexts.size() + negativeTexts.size()));
         probNegative = Math.log((double) negativeTexts.size() / (positiveTexts.size() + negativeTexts.size()));
     }
+
+    public String classifyText(String text, List<String> vocabulary) {
+        // Metatropi tou keimenou se 0 h 1 analoga an yparxoun oi lexeis sto lexilogio
+        int[] features = createFeatureVector(text, vocabulary);
+    
+        
+        double logProbPositive = probPositive;
+        double logProbNegative = probNegative;
+    
+        // Ypologismos synolikis pithanotitas
+        for (int i = 0; i < features.length; i++) {
+            if (features[i] == 1) { // H lexi poy yparxei
+                logProbPositive += positiveProbabilities.getOrDefault(vocabulary.get(i), Math.log(1.0 / (vocabulary.size() + 1)));
+                logProbNegative += negativeProbabilities.getOrDefault(vocabulary.get(i), Math.log(1.0 / (vocabulary.size() + 1)));
+            }
+        }
+    
+        // Epistrofi katigorias me tin ypsiloterh pithanotita
+        return logProbPositive > logProbNegative ? "Positive" : "Negative";
+    }
 }
