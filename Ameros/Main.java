@@ -55,7 +55,46 @@ public class Main {
             List<Double> trainingAccuracies = new ArrayList<>();
             List<Double> testAccuracies = new ArrayList<>();
 
-            
+            int[] trainingSizes = { 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600 };
+            for (int size : trainingSizes) {
+                // Ekpaideusi tou montelou me to sigekrimeno megethos
+                List<String> limitedPositiveTexts = positiveTexts.subList(0, size);
+                List<String> limitedNegativeTexts = negativeTexts.subList(0, size);
+                nb.train(limitedPositiveTexts, limitedNegativeTexts);
+
+                // Axiologisi tou montelou kai katagrafi akriveias
+                double trainingAccuracy = (nb.calculateAccuracy(limitedPositiveTexts, vocabulary, "Positive")
+                        + nb.calculateAccuracy(limitedNegativeTexts, vocabulary, "Negative")) / 2.0;
+                double testAccuracy = (nb.calculateAccuracy(positiveTestTexts, vocabulary, "Positive")
+                        + nb.calculateAccuracy(negativeTestTexts, vocabulary, "Negative")) / 2.0;
+
+                trainingAccuracies.add(trainingAccuracy);
+                testAccuracies.add(testAccuracy);
+
+                // Ektiposi
+                // System.out.println("Training size: " + size + ", Training Accuracy: " +
+                // trainingAccuracy + ", Test Accuracy: " + testAccuracy);
+
+                // Calculate TP, FP, FN for the current model
+                Map<String, Integer> tpfpfnPos = nb.calculateTPFPFN(positiveTestTexts, vocabulary, "Positive");
+                Map<String, Integer> tpfpfnNeg = nb.calculateTPFPFN(negativeTestTexts, vocabulary, "Negative");
+
+                // Combine TP, FP, FN for positive and negative classes
+                int TP = tpfpfnPos.get("TP") + tpfpfnNeg.get("TP");
+                int FP = tpfpfnPos.get("FP") + tpfpfnNeg.get("FP");
+                int FN = tpfpfnPos.get("FN") + tpfpfnNeg.get("FN");
+
+                // Calculate precision, recall, and F1 score
+                double precision = nb.calculatePrecision(TP, FP);
+                double recall = nb.calculateRecall(TP, FN);
+                double f1Score = nb.calculateF1Score(TP, FP, FN);
+
+                // Store the metrics
+                trainingPrecisions.add(precision);
+                trainingRecalls.add(recall);
+                trainingF1Scores.add(f1Score);
+
+            }
 
 
     }  catch (IOException e) {
