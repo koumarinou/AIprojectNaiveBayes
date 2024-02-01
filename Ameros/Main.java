@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JFrame;
+
 public class Main {
     public static void main(String[] args) {
         try {
@@ -96,7 +98,47 @@ public class Main {
 
             }
 
-            
+            // Neo keimeno , ayto einai positive
+            String newText = "This movie is an absolute gem, a delightful blend of humor, heart, and creativity. The performances are top-notch, the storyline is engaging and full of surprises, and the cinematography is breathtaking. It's a film that not only entertains but also inspires. Highly recommended for anyone seeking a memorable movie experience!";
+            String classification = nb.classifyText(newText, vocabulary);
+
+            // Print katigorias neou keimenou
+            System.out.println("The text classified as : " + classification);
+
+            // Pause gia 2 deuterolepta
+            try {
+                Thread.sleep(2000); // 20000 milliseconds = 20 seconds
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // Accuracy
+            JFrame frame = new JFrame("Accuracy Graph");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            List<Integer> trainingSize = List.of(50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600);
+
+            AccuracyGraph graphPanel = new AccuracyGraph(trainingSize, trainingAccuracies, testAccuracies);
+            frame.add(graphPanel);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+
+            // Pause gia 3 deuterolepta
+            try {
+                Thread.sleep(3000); // 20000 milliseconds = 20 seconds
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // Precision , Recall , F1
+            JFrame frameMetrics = new JFrame("Precision, Recall, and F1 Score Graph");
+            frameMetrics.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            PreRecF1Graph prfGraphPanel = new PreRecF1Graph(trainingSize, trainingPrecisions, trainingRecalls,
+                    trainingF1Scores);
+            frameMetrics.add(prfGraphPanel);
+            frameMetrics.pack();
+            frameMetrics.setLocationRelativeTo(null);
+            frameMetrics.setVisible(true);
 
 
     }  catch (IOException e) {
