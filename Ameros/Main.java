@@ -1,10 +1,10 @@
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.swing.JFrame;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
 public class Main {
     public static void main(String[] args) {
@@ -36,7 +36,6 @@ public class Main {
             combinedFreq.putAll(positiveFreq);
             negativeFreq.forEach((key, value) -> combinedFreq.merge(key, value, Integer::sum));
 
-
             // Dimiourgia lexilogiou
             // Arithmos ton lexewn sto lexilogio
             // 240
@@ -48,7 +47,6 @@ public class Main {
             // 20
             int k = 50;
             List<String> vocabulary = nb.createVocabulary(combinedFreq, m, n, k);
-
 
             // Lists to store precision, recall, and F1 score for each training size and accuracy 
             List<Double> trainingPrecisions = new ArrayList<>();
@@ -62,6 +60,7 @@ public class Main {
                 // Ekpaideusi tou montelou me to sigekrimeno megethos
                 List<String> limitedPositiveTexts = positiveTexts.subList(0, size);
                 List<String> limitedNegativeTexts = negativeTexts.subList(0, size);
+                
                 nb.train(limitedPositiveTexts, limitedNegativeTexts);
 
                 // Axiologisi tou montelou kai katagrafi akriveias
@@ -78,8 +77,8 @@ public class Main {
                 // trainingAccuracy + ", Test Accuracy: " + testAccuracy);
 
                 // Calculate TP, FP, FN for the current model
-                Map<String, Integer> tpfpfnPos = nb.calculateTPFPFN(positiveTestTexts, vocabulary, "Positive");
-                Map<String, Integer> tpfpfnNeg = nb.calculateTPFPFN(negativeTestTexts, vocabulary, "Negative");
+                Map<String, Integer> tpfpfnPos = nb.calculateTPFPFN(limitedPositiveTexts, vocabulary, "Positive");
+                Map<String, Integer> tpfpfnNeg = nb.calculateTPFPFN(limitedNegativeTexts, vocabulary, "Negative");
 
                 // Combine TP, FP, FN for positive and negative classes
                 int TP = tpfpfnPos.get("TP") + tpfpfnNeg.get("TP");
@@ -140,8 +139,27 @@ public class Main {
             frameMetrics.setLocationRelativeTo(null);
             frameMetrics.setVisible(true);
 
+             for(double score:trainingPrecisions){
+                 System.out.println(score + "Pre\n");
+             }
 
-    }  catch (IOException e) {
+            for(double score:trainingRecalls){
+                 System.out.println(score + "Rec\n");
+             }
+
+             for(double score:trainingF1Scores){
+                 System.out.println(score + "F1\n" );
+             }
+
+            // for(double score:trainingAccuracies){
+            //    System.out.println(score + "trainingAccuracie\n" );
+            // }
+
+            // for(double score:testAccuracies){
+            //     System.out.println(score + "testAccuracie\n" );
+            // }
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

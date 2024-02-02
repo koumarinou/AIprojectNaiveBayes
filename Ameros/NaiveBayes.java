@@ -1,7 +1,6 @@
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -9,6 +8,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class NaiveBayes {
 
@@ -26,7 +28,6 @@ public class NaiveBayes {
         probNegative = 0.0;
         
     }
-
 
     // Fortonei ta keimena apo ti diadromi
     public static List<String> loadTexts(String directoryPath) throws IOException {
@@ -49,7 +50,6 @@ public class NaiveBayes {
         return texts; 
     }
 
-
     // Metraei ti sixnotita kathe lexis
     public Map<String, Integer> createWordFrequencyMap(List<String> texts) {
         // Dimiourgia enos Map opou metraei tin suxnotita kathes lexhs sto keimeno 
@@ -63,6 +63,7 @@ public class NaiveBayes {
         }
         return wordFreq;
     }
+
 
     // Dimiourgei to lexilogio
     public List<String> createVocabulary(Map<String, Integer> wordFreq, int m, int n, int k) {
@@ -90,7 +91,6 @@ public class NaiveBayes {
                           .limit(m)
                           .collect(Collectors.toList());
     }
-
 
     // Metatropi tou keimenou se 1,0 an yparxoun h den yparxoun antistoixa oi lexeis
     public int[] createFeatureVector(String text, List<String> sortedWords) {
@@ -154,39 +154,35 @@ public class NaiveBayes {
         return logProbPositive > logProbNegative ? "Positive" : "Negative";
     }
 
-    
+
     public double calculateAccuracy(List<String> texts, List<String> vocabulary, String expectedClass) {
         int correct = 0;
         for (String text : texts) {
             String predictedClass = classifyText(text, vocabulary);
-            if (predictedClass.equals(expectedClass)) {
-                correct++;
-            }
+            if (predictedClass.equals(expectedClass)) correct++;
         }
-        return (double) correct / texts.size();
+        return texts.isEmpty() ? 0 : (double) correct / texts.size();
     }
 
-    // Method to calculate TP, FP, and FN
-    public Map<String, Integer> calculateTPFPFN(List<String> texts, List<String> vocabulary, String label) {
-        int TP = 0, FP = 0, FN = 0;
+     // Improved method to calculate TP, FP, FN based on classified and actual labels
+     public Map<String, Integer> calculateTPFPFN(List<String> texts, List<String> vocabulary, String actualLabel) {
+        int TP = 0, FP = 0, FN = 0, TN = 0; // Added TN for completeness
         for (String text : texts) {
             String predictedClass = classifyText(text, vocabulary);
-            if (predictedClass.equals(label)) {
-                if (label.equals("Positive")) {
-                    TP++; 
-                } else {
-                    FN++; 
-                }
-            } else {
-                if (label.equals("Positive")) {
-                        FP++; 
-                }
-            }
+            boolean isPositive = actualLabel.equals("Positive");
+            boolean predictionIsPositive = predictedClass.equals("Positive");
+            
+            if (isPositive && predictionIsPositive) TP++;
+            else if (!isPositive && !predictionIsPositive) TN++;
+            else if (!isPositive && predictionIsPositive) FP++;
+            else if (isPositive && !predictionIsPositive) FN++;
         }
+        
         Map<String, Integer> counts = new HashMap<>();
         counts.put("TP", TP);
         counts.put("FP", FP);
         counts.put("FN", FN);
+        counts.put("TN", TN); 
 
         return counts;
     }
@@ -207,4 +203,10 @@ public class NaiveBayes {
         double recall = calculateRecall(TP, FN);
         return 2 * (precision * recall) / (precision + recall);
     }
+
+
+    
+    
+    
 }
+
